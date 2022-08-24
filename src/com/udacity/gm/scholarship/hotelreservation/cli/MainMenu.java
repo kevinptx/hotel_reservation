@@ -1,0 +1,190 @@
+package com.udacity.gm.scholarship.hotelreservation.cli;
+
+import com.udacity.gm.scholarship.hotelreservation.model.Customer;
+import com.udacity.gm.scholarship.hotelreservation.model.IRoom;
+import com.udacity.gm.scholarship.hotelreservation.model.Reservation;
+import com.udacity.gm.scholarship.hotelreservation.service.CustomerService;
+import com.udacity.gm.scholarship.hotelreservation.service.ReservationService;
+import com.udacity.gm.scholarship.hotelreservation.api.HotelResource;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Scanner;
+
+import static com.udacity.gm.scholarship.hotelreservation.cli.AdminMenu.displayAdminMenu;
+
+//Reference: Mentor session 7-27-22, Mentor Session 7-30-22, and Mentor Session 7-31-22
+public class MainMenu {
+    private static final HotelResource hotelResource = HotelResource.getInstance();
+
+    private static final String ACCEPTABLE_DATE_FORMAT = "MM/dd/yyyy";
+
+    public static void displayMainMenu(Scanner scanner){
+        showMainMenu();
+        int selection = -1;
+        while(selection != 5){
+            try{
+                selection = Integer.parseInt(scanner.nextLine());
+                switch (selection){
+                    case 1:
+                        System.out.println("Selection: Reserve a Room");
+                        findAndReserveARoom(scanner);
+                        break;
+                    case 2:
+                        System.out.println("Selection: Display Your Reservations");
+                        displayCustomerReservations(scanner);
+                        break;
+                    case 3:
+                        System.out.println("Selection: Create an Account");
+                        displayCreateAccount(scanner);
+                        break;
+                    case 4:
+                        System.out.println("Selection: Display Admin Menu");
+                        displayAdminMenu(scanner);
+                        break;
+                    case 5:
+                        break;
+                    default:
+                        System.out.println("Please make a selection from 1 to 5.");
+                }
+            } catch (NumberFormatException nfe){
+                System.out.println("Please select an integer between 1 to 5 ONLY.");
+            }
+        }
+    }
+
+    private static void displayCreateAccount(Scanner scanner)  {
+        System.out.println("Enter your email address in the format name@email.com: ");
+        String inputEmail = scanner.next();
+        System.out.println("First Name: ");
+        String firstName = scanner.nextLine();
+        System.out.println("Last Name: ");
+        String lastName = scanner.next();
+        hotelResource.createACustomer(inputEmail, firstName, lastName);
+    }
+
+    public static void showMainMenu(){
+        System.out.println("Welcome to the Hotel Reservation App!");
+        System.out.println("=======================================================");
+        System.out.println("1. Find and reserve a room.");
+        System.out.println("2. See my reservations");
+        System.out.println("3. Create an account");
+        System.out.println("4. Admin Menu");
+        System.out.println("5. Exit");
+        System.out.println("=======================================================");
+        System.out.println("Please select a number from 1-5 from the menu.");
+    }
+
+    private static void displaySeparatorLine(){
+        System.out.println("=======================================================");
+        System.out.println();
+    }
+
+    private static void displayCustomerReservations(Scanner scanner){
+        System.out.println("Please provide your customer email:");
+        String customerEmail = scanner.nextLine();
+        Customer customer = CustomerService.getInstance().getCustomer(customerEmail);
+        if(customer == null){
+            System.out.println("I am not able to locate the customer with an email address of=" + customerEmail);
+            System.out.println("An account must be created first.");
+        } else {
+            Collection<Reservation> customerReservations = ReservationService.getInstance().getCustomersReservation(customer);
+            ReservationService.getInstance().printReservations(customerReservations);
+        }
+        displaySeparatorLine();
+        showMainMenu();
+    }
+
+    public static void findAndReserveARoom(Scanner scanner){
+        System.out.println("Please enter your check-in date in MM/DD/YYYY format: ");
+        Date checkInDate = getUserProvidedDate(scanner);
+        System.out.println("Please enter your check-out date in MM/DD/YYYY format: ");
+        Date checkOutDate = getUserProvidedDate(scanner);
+        System.out.println("Enter your email address in the format name@email.com: ");
+        String findCustomerEmail = scanner.next();
+        performFindAndReserveARoomChecks(scanner, findCustomerEmail, checkInDate, checkOutDate);
+    }
+
+    public static void performFindAndReserveARoomChecks(Scanner scanner, String inputEmail, Date checkInDate, Date checkOutDate){
+        if(checkInDate != null && checkOutDate != null){
+            Collection<IRoom> roomsAvailable = hotelResource.findARoom(checkInDate, checkOutDate);
+            printRooms(roomsAvailable);
+            //ask customer which room they want.
+            System.out.println("Select a room from the list: ");
+            String getUserSelectedRoom = scanner.nextLine();
+            IRoom selectedRoom = hotelResource.getRoom(getUserSelectedRoom);
+            Reservation reservation = hotelResource.bookARoom(inputEmail, selectedRoom, checkInDate, checkOutDate);
+            System.out.println("Thank you for booking a room with us! Your Room Details:");
+            System.out.println(reservation.toString());
+            if(roomsAvailable == null){
+                Collection<IRoom> suggestedRooms = hotelResource.findSuggestedRooms(checkInDate, checkOutDate);
+                if(suggestedRooms == null){
+                    System.out.println("No suggested rooms were found");
+                } else {
+                    Date suggestedCheckIn = hotelResource.addSuggestedSevenDays(checkInDate);
+                    Date suggestedCheckOut = hotelResource.addSuggestedSevenDays(checkOutDate);
+                    System.out.println("Your suggested room reservation days are 7 days added to your check-in and check-out dates as follows:" +
+                            "\n Check-In-Date + 7: " + suggestedCheckIn +
+                            "\n Check-Out-Date + 7" + suggestedCheckOut);
+                    printRooms(suggestedRooms);
+                }
+            }
+        }
+    }
+
+    // source: https://www.baeldung.com/java-iterate-list
+    public static void printRooms(Collection<IRoom> rooms){
+        if(rooms == null){
+            System.out.println("No rooms were located.");
+        } else {
+            rooms.stream().forEach((room) -> System.out.println(room));
+            }
+        }
+
+    public static Date getUserProvidedDate(Scanner scanner) {
+        try {
+            return new SimpleDateFormat(ACCEPTABLE_DATE_FORMAT).parse(scanner.nextLine());
+        } catch (ParseException ex) {
+            System.out.println("Error: You Entered an Invalid date that is not in MM/DD/YYYY format.");
+            findAndReserveARoom(scanner);
+        }
+        return null;
+    }
+
+    private static boolean isYesOrNo(String answerString){
+        boolean yesOrNoFlag = false;
+        if(answerString != null){
+            if("YES".equalsIgnoreCase(answerString) ||
+            "Y".equalsIgnoreCase(answerString) ||
+            "N".equalsIgnoreCase(answerString) ||
+            "NO".equalsIgnoreCase(answerString))
+                yesOrNoFlag = true;
+        }
+        return yesOrNoFlag;
+    }
+
+
+    private static boolean answerIsYes(String questionMessage, Scanner scanner){
+        boolean isAnswerYes = false;
+        System.out.println(questionMessage);
+        String answer = scanner.nextLine();
+        while(!isYesOrNo(answer)) {
+            System.out.println("Please enter YES (Y) or NO (N)");
+            System.out.println(questionMessage);
+            answer = scanner.nextLine();
+        }
+        return isAnswerYes(answer);
+    }
+
+    private static boolean isAnswerYes(String answerString){
+        boolean isYesFlag = false;
+        if(answerString != null){
+            if("YES".equalsIgnoreCase(answerString) ||
+            "Y".equalsIgnoreCase(answerString))
+                isYesFlag = true;
+        }
+        return isYesFlag;
+    }
+}
