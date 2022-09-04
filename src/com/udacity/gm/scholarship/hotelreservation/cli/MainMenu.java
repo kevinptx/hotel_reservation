@@ -21,36 +21,50 @@ public class MainMenu {
 
     private static final String ACCEPTABLE_DATE_FORMAT = "MM/dd/yyyy";
 
-    public static void displayMainMenu(Scanner scanner){
-        showMainMenu();
-        int selection = -1;
-        while(selection != 5){
-            try{
-                selection = Integer.parseInt(scanner.nextLine());
-                switch (selection){
-                    case 1:
+    public static void displayMainMenu(Scanner scanner) {
+        Scanner mainMenuUserInput = new Scanner(System.in);
+        while (true) {
+            System.out.println("Welcome to the Hotel Reservation App!");
+            System.out.println("=======================================================");
+            System.out.println("1. Find and reserve a room.");
+            System.out.println("2. See my reservations");
+            System.out.println("3. Create an account");
+            System.out.println("4. Admin Menu");
+            System.out.println("5. Exit");
+            System.out.println("=======================================================");
+            System.out.println("Please select a number from 1-5 from the above Main Menu.");
+
+            String mainMenuUserInputString = mainMenuUserInput.next();
+            while (true) {
+                boolean invalidMainMenuOption = false;
+                switch (mainMenuUserInputString) {
+                    case "1":
                         System.out.println("Selection: Reserve a Room");
-                        findAndReserveARoom(scanner);
+                        findAndReserveARoom(mainMenuUserInput);
                         break;
-                    case 2:
+                    case "2":
                         System.out.println("Selection: Display Your Reservations");
-                        displayCustomerReservations(scanner);
+                        displayCustomerReservations(mainMenuUserInput);
                         break;
-                    case 3:
+                    case "3":
                         System.out.println("Selection: Create an Account");
-                        displayCreateAccount(scanner);
+                        displayCreateAccount(mainMenuUserInput);
                         break;
-                    case 4:
+                    case "4":
                         System.out.println("Selection: Display Admin Menu");
-                        displayAdminMenu(scanner);
+                        displayAdminMenu(mainMenuUserInput);
                         break;
-                    case 5:
-                        break;
+                    case "5":
+                        System.out.println("Thank you! See you next time!");
+                        return;
                     default:
-                        System.out.println("Please make a selection from 1 to 5.");
+                        invalidMainMenuOption = true;
+                        System.out.println("Please make a selection from 1 to 5 from the above menu.");
+                        mainMenuUserInputString = mainMenuUserInput.next();
                 }
-            } catch (NumberFormatException nfe){
-                System.out.println("Please select an integer between 1 to 5 ONLY.");
+                if (!invalidMainMenuOption) {
+                    break;
+                }
             }
         }
     }
@@ -59,10 +73,17 @@ public class MainMenu {
         System.out.println("Enter your email address in the format name@email.com: ");
         String inputEmail = scanner.next();
         System.out.println("First Name: ");
-        String firstName = scanner.nextLine();
+        String firstName = scanner.next();
         System.out.println("Last Name: ");
         String lastName = scanner.next();
         hotelResource.createACustomer(inputEmail, firstName, lastName);
+        System.out.println(firstName + " " + lastName + ", Your account was created: \n" + "First Name: " + firstName + "\n" + "Last Name : " + lastName + "\n" + "Email: " +inputEmail + "\n");
+    }
+
+
+    private static void displaySeparatorLine(){
+        System.out.println("=======================================================");
+        System.out.println();
     }
 
     public static void showMainMenu(){
@@ -75,11 +96,6 @@ public class MainMenu {
         System.out.println("5. Exit");
         System.out.println("=======================================================");
         System.out.println("Please select a number from 1-5 from the menu.");
-    }
-
-    private static void displaySeparatorLine(){
-        System.out.println("=======================================================");
-        System.out.println();
     }
 
     private static void displayCustomerReservations(Scanner scanner){

@@ -3,10 +3,10 @@ package com.udacity.gm.scholarship.hotelreservation.model;
 import java.util.Objects;
 
 public class Room implements IRoom {
-    private String roomNumber;
+    public String roomNumber;
 
-    private Double price;
-    private RoomType roomType;
+    public Double price;
+    public RoomType roomType;
 
     public Room (String roomNumber, Double price, RoomType roomType){
         this.roomNumber = roomNumber;
@@ -61,7 +61,7 @@ public class Room implements IRoom {
 
     @Override
     public String toString() {
-        return "com.udacity.gm.scholarship.hotelreservation.com.udacity.gm.scholarship.hotelreservation.model.com.udacity.gm.scholarship.hotelreservation.model.com.udacity.gm.scholarship.hotelreservation.model.Room{" +
+        return "com.udacity.gm.scholarship.hotel-reservation.com.udacity.gm.scholarship.hotel-reservation.model.com.udacity.gm.scholarship.hotel-reservation.model.com.udacity.gm.scholarship.hotel-reservation.model.Room{" +
                 "roomNumber='" + roomNumber + '\'' +
                 ", price=" + price +
                 ", roomType=" + roomType +
