@@ -5,6 +5,7 @@ import com.udacity.gm.scholarship.hotelreservation.model.IRoom;
 import com.udacity.gm.scholarship.hotelreservation.model.Reservation;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 //Reference: Mentor session 7-27-22, Mentor Session 7-30-22, and Mentor Session 7-31-22
 public class ReservationService {
@@ -19,9 +20,11 @@ public class ReservationService {
         }
         return RESERVATION_SERVICE_INSTANCE;
     }
-    private Collection<Reservation> reservations = new ArrayList<>();
+    //private Collection<Reservation> reservations = new ArrayList<>();
 
     private static Map<String, IRoom> roomsMap = new HashMap<>();
+
+    private static Collection<Reservation> reservations = new HashSet<>();
 
     public void addRoom(IRoom room) {
         String roomNumber = room.getRoomNumber();
@@ -29,7 +32,7 @@ public class ReservationService {
             roomsMap.put(roomNumber, room);
     }
 
-   boolean roomCurrentlyExists(String roomNumber) {
+    boolean roomCurrentlyExists(String roomNumber) {
         boolean roomCurrentlyExistsFlag = false;
         IRoom room = roomsMap.get(roomNumber);
         if (room != null)
@@ -47,7 +50,7 @@ public class ReservationService {
         return room;
     }
 
-    public Collection<IRoom> getAllRooms() {
+    public static Collection<IRoom> getAllRooms() {
         return roomsMap.values();
     }
 
@@ -107,17 +110,27 @@ public class ReservationService {
         return sameRoomFlag;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-        List<String> conflictingRoomNumberList = getConflictingRoomNumbers(this.reservations, checkInDate, checkOutDate);
-        List<IRoom> availableRoomList = new ArrayList<>();
-        Iterator<Map.Entry<String, IRoom>> itr = roomsMap.entrySet().iterator();
-        while (itr.hasNext()) {
-            Map.Entry<String, IRoom> entry = itr.next();
-            String roomNumber = entry.getKey();
-            if (roomHasNoConflict(conflictingRoomNumberList, roomNumber))
-                availableRoomList.add(entry.getValue());
+//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+//        List<String> conflictingRoomNumberList = getConflictingRoomNumbers(this.reservations, checkInDate, checkOutDate);
+//        List<IRoom> availableRoomList = new ArrayList<>();
+//        Iterator<Map.Entry<String, IRoom>> itr = roomsMap.entrySet().iterator();
+//        while (itr.hasNext()) {
+//            Map.Entry<String, IRoom> entry = itr.next();
+//            String roomNumber = entry.getKey();
+//            if (roomHasNoConflict(conflictingRoomNumberList, roomNumber))
+//                availableRoomList.add(entry.getValue());
+//        }
+//        return availableRoomList;
+//    }
+
+    public static Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+        Collection<IRoom> rooms = getAllRooms();
+        for (Reservation reservation : reservations) {
+            if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
+                rooms.remove(reservation.getRoom());
+            }
         }
-        return availableRoomList;
+        return rooms.stream().collect(Collectors.toList());
     }
 
     public boolean areDatesReservedAlready(Reservation reservation, Date checkInDate, Date checkOutDate) {
@@ -180,15 +193,20 @@ public class ReservationService {
         return returnedReservations;
     }
 
-    public void printAllReservations(){
-        int index = 1;
-        for(Reservation reservation : reservations){
-            System.out.println("Reservation No." + index + ":");
-            System.out.println("\t" + reservation);
-            System.out.println("");
-            index++;
-        }
+    public static void printAllReservations(){
+        System.out.println(reservations);
     }
+
+
+//    public void printAllReservations(){
+//        int index = 1;
+//        for(Reservation reservation : reservations){
+//            System.out.println("Reservation No." + index + ":");
+//            System.out.println("\t" + reservation);
+//            System.out.println("");
+//            index++;
+//        }
+//    }
 
     public void printReservations(Collection<Reservation> reservations){
         int index = 1;

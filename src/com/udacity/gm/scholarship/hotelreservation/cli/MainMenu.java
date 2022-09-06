@@ -156,16 +156,17 @@ public class MainMenu {
             System.out.println("No rooms were located.");
         } else {
             rooms.stream().forEach((room) -> System.out.println(room));
-            }
         }
+    }
 
     public static Date getUserProvidedDate(Scanner scanner) {
         try {
-            return new SimpleDateFormat(ACCEPTABLE_DATE_FORMAT).parse(scanner.nextLine());
+            return new SimpleDateFormat(ACCEPTABLE_DATE_FORMAT).parse(scanner.next());
         } catch (ParseException ex) {
             System.out.println("Error: You Entered an Invalid date that is not in MM/DD/YYYY format.");
             findAndReserveARoom(scanner);
         }
+        //change this: It's causing the null problem.
         return null;
     }
 
@@ -173,9 +174,9 @@ public class MainMenu {
         boolean yesOrNoFlag = false;
         if(answerString != null){
             if("YES".equalsIgnoreCase(answerString) ||
-            "Y".equalsIgnoreCase(answerString) ||
-            "N".equalsIgnoreCase(answerString) ||
-            "NO".equalsIgnoreCase(answerString))
+                    "Y".equalsIgnoreCase(answerString) ||
+                    "N".equalsIgnoreCase(answerString) ||
+                    "NO".equalsIgnoreCase(answerString))
                 yesOrNoFlag = true;
         }
         return yesOrNoFlag;
@@ -198,7 +199,7 @@ public class MainMenu {
         boolean isYesFlag = false;
         if(answerString != null){
             if("YES".equalsIgnoreCase(answerString) ||
-            "Y".equalsIgnoreCase(answerString))
+                    "Y".equalsIgnoreCase(answerString))
                 isYesFlag = true;
         }
         return isYesFlag;

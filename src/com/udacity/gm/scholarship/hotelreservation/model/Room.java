@@ -61,7 +61,7 @@ public class Room implements IRoom {
 
     @Override
     public String toString() {
-        return "com.udacity.gm.scholarship.hotel-reservation.com.udacity.gm.scholarship.hotel-reservation.model.com.udacity.gm.scholarship.hotel-reservation.model.com.udacity.gm.scholarship.hotel-reservation.model.Room{" +
+        return "{" +
                 "roomNumber='" + roomNumber + '\'' +
                 ", price=" + price +
                 ", roomType=" + roomType +
