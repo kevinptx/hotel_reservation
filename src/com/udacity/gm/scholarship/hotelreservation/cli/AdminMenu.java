@@ -5,11 +5,7 @@ import com.udacity.gm.scholarship.hotelreservation.model.*;
 import com.udacity.gm.scholarship.hotelreservation.service.ReservationService;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 //Reference: Mentor session 7-27-22, Mentor Session 7-30-22, and Mentor Session 7-31-22
 public class AdminMenu {
@@ -73,7 +69,7 @@ public static void displayAdminMenu(Scanner input){
         String roomNumber;
         Double roomPrice;
         RoomType roomType;
-        List<IRoom> newRoomList = new LinkedList<>();
+        Collection<IRoom> allRooms = AdminResource.getInstance().getAllRooms();
         while (true) {
             System.out.println("Enter room number: ");
             roomNumber = scanner.next();
@@ -102,23 +98,23 @@ public static void displayAdminMenu(Scanner input){
             } else {
                 createNewRoom = new Room(roomNumber, roomPrice, roomType);
             }
-            Collection<IRoom> allRooms = AdminResource.getInstance().getAllRooms();
             boolean roomNumAlreadyExists = false;
             //source: https://howtodoinjava.com/java8/stream-concat-example/
-            for (IRoom room : Stream.concat(allRooms.stream(), newRoomList.stream()).collect(Collectors.toList())) {
+            for(IRoom room : allRooms){
+            //for (IRoom room : Stream.concat(allRooms.stream(), newRoomList.stream()).collect(Collectors.toList())) {
                 if (room.equals(createNewRoom)) {
                     roomNumAlreadyExists = true;
                     break;
                 }
             }
             if (!roomNumAlreadyExists) {
-                newRoomList.add(createNewRoom);
+                ReservationService.getInstance().addRoom(createNewRoom);
             } else {
                 System.out.println("Room number " + roomNumber + " already exists in the database. \n");
             }
             System.out.println("Would you like to add another room? Please choose Y or N");
             if (!isYesOrNo(scanner)) {
-                AdminResource.getInstance().addRoom(newRoomList);
+                AdminResource.getInstance().addRoom(rooms);
                 return;
             }
         }

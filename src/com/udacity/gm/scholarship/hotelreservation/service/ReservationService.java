@@ -50,7 +50,7 @@ public class ReservationService {
         return room;
     }
 
-    public static Collection<IRoom> getAllRooms() {
+    public Collection<IRoom> getAllRooms() {
         return roomsMap.values();
     }
 
@@ -123,7 +123,7 @@ public class ReservationService {
 //        return availableRoomList;
 //    }
 
-    public static Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
         Collection<IRoom> rooms = getAllRooms();
         for (Reservation reservation : reservations) {
             if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
@@ -193,7 +193,7 @@ public class ReservationService {
         return returnedReservations;
     }
 
-    public static void printAllReservations(){
+    public void printAllReservations(){
         System.out.println(reservations);
     }
 
