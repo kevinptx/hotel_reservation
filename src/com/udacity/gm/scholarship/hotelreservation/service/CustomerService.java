@@ -30,7 +30,7 @@ public class CustomerService {
         }
     }
 
-    private boolean isCustomerAlreadyExists(String email) {
+    public boolean isCustomerAlreadyExists(String email) {
         boolean customerExistsFlag = false;
         Customer customer = mapOfCustomers.get(email);
         if(customer != null)

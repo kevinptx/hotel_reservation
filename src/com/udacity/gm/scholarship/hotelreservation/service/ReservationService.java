@@ -9,13 +9,14 @@ import java.util.stream.Collectors;
 
 //Reference: Mentor session 7-27-22, Mentor Session 7-30-22, and Mentor Session 7-31-22
 public class ReservationService {
-    private ReservationService(){}
+    private ReservationService() {
+    }
 
     private static ReservationService RESERVATION_SERVICE_INSTANCE = null;
 
     //Source: https://www.geeksforgeeks.org/singleton-class-java/
-    public static ReservationService getInstance(){
-        if(RESERVATION_SERVICE_INSTANCE == null){
+    public static ReservationService getInstance() {
+        if (RESERVATION_SERVICE_INSTANCE == null) {
             RESERVATION_SERVICE_INSTANCE = new ReservationService();
         }
         return RESERVATION_SERVICE_INSTANCE;
@@ -24,7 +25,8 @@ public class ReservationService {
 
     private static Map<String, IRoom> roomsMap = new HashMap<>();
 
-    private static Collection<Reservation> reservations = new HashSet<>();
+    //    private static Collection<Reservation> reservations = new HashSet<>();
+    private static Collection<Reservation> reservations = new ArrayList<>();
 
     public void addRoom(IRoom room) {
         String roomNumber = room.getRoomNumber();
@@ -40,10 +42,11 @@ public class ReservationService {
         return roomCurrentlyExistsFlag;
     }
 
+
     public IRoom getARoom(String roomId) {
         IRoom room = null;
-        for(Map.Entry<String, IRoom> singleRoom : roomsMap.entrySet()){
-            if(singleRoom.getKey().equals(roomId)){
+        for (Map.Entry<String, IRoom> singleRoom : roomsMap.entrySet()) {
+            if (singleRoom.getKey().equals(roomId)) {
                 room = singleRoom.getValue();
             }
         }
@@ -98,7 +101,7 @@ public class ReservationService {
 
     private boolean targetDateBetweenReservationCheckInCheckOutDates(Date targetDate, Reservation reservation) {
         boolean isBetweenTrueFlag = false;
-        if(targetDate.compareTo(reservation.getCheckInDate()) > 0 && targetDate.compareTo(reservation.getCheckOutDate()) < 0)
+        if (targetDate.compareTo(reservation.getCheckInDate()) > 0 && targetDate.compareTo(reservation.getCheckOutDate()) < 0)
             isBetweenTrueFlag = true;
         return isBetweenTrueFlag;
     }
@@ -123,15 +126,28 @@ public class ReservationService {
 //        return availableRoomList;
 //    }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        Collection<IRoom> rooms = getAllRooms();
-        for (Reservation reservation : reservations) {
-            if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
-                rooms.remove(reservation.getRoom());
+//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+//        Collection<IRoom> rooms = getAllRooms();
+//        for (Reservation reservation : reservations) {
+//            if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
+//                rooms.remove(reservation.getRoom());
+//            }
+//        }
+//        return rooms.stream().collect(Collectors.toList());
+//    }
+
+    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+        List<String> conflictRoomNumberList = getConflictingRoomNumbers(reservations, checkInDate, checkOutDate);
+        List<IRoom> availableRoomList = new ArrayList<>();
+        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
+            String roomNumber = entry.getKey();
+            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
+                availableRoomList.add(entry.getValue());
             }
         }
-        return rooms.stream().collect(Collectors.toList());
+        return availableRoomList;
     }
+
 
     public boolean areDatesReservedAlready(Reservation reservation, Date checkInDate, Date checkOutDate) {
         if (checkInDate.before(reservation.getCheckInDate()) && checkOutDate.after(reservation.getCheckOutDate())) {
@@ -143,8 +159,8 @@ public class ReservationService {
 
     private List<String> getConflictingRoomNumbers(Collection<Reservation> reservations, Date checkInDate, Date checkOutDate) {
         List<String> conflictRoomNumberList = new ArrayList<>();
-        for(Reservation reservation : reservations){
-            if(reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate)){
+        for (Reservation reservation : reservations) {
+            if (reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate)) {
                 conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
             }
         }
@@ -153,7 +169,7 @@ public class ReservationService {
 
     private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
         boolean hasConflict = false;
-        if(reservation.getCheckInDate().equals(checkInDate) && reservation.getCheckOutDate().equals(checkOutDate)){
+        if (reservation.getCheckInDate().equals(checkInDate) && reservation.getCheckOutDate().equals(checkOutDate)) {
             hasConflict = true;
         }
         return hasConflict;
@@ -185,15 +201,15 @@ public class ReservationService {
 
     public Collection<Reservation> getCustomersReservation(Customer customer) {
         Collection<Reservation> returnedReservations = new ArrayList<>();
-        for(Reservation reservation : reservations){
-            if(reservation.getCustomer().equals(customer)){
+        for (Reservation reservation : reservations) {
+            if (reservation.getCustomer().equals(customer)) {
                 returnedReservations.add(reservation);
             }
         }
         return returnedReservations;
     }
 
-    public void printAllReservations(){
+    public void printAllReservations() {
         System.out.println(reservations);
     }
 
@@ -208,9 +224,9 @@ public class ReservationService {
 //        }
 //    }
 
-    public void printReservations(Collection<Reservation> reservations){
+    public void printReservations(Collection<Reservation> reservations) {
         int index = 1;
-        for(Reservation reservation : reservations){
+        for (Reservation reservation : reservations) {
             System.out.println("Reservation No." + index + ":");
             System.out.println("\t" + reservation);
             System.out.println("");
@@ -219,9 +235,9 @@ public class ReservationService {
     }
 
     //this is printing rooms from the Hash Map from above.
-    public void printAllRooms(){
+    public void printAllRooms() {
         int index = 1;
-        for(IRoom room : roomsMap.values()){
+        for (IRoom room : roomsMap.values()) {
             System.out.println("Room Number:" + index + ":");
             System.out.println("\t Room Number: " + room.getRoomNumber());
             System.out.println("\t Room Price: " + room.getRoomPrice());
@@ -231,10 +247,11 @@ public class ReservationService {
             index++;
         }
     }
+
     //this is to print specific rooms based on the parameter passed in.
-    public static void printRooms(Collection<IRoom> rooms){
+    public void printRooms(Collection<IRoom> rooms) {
         int index = 1;
-        for(IRoom room : roomsMap.values()){
+        for (IRoom room : roomsMap.values()) {
             System.out.println("Room No." + room.getRoomNumber());
             System.out.println("\t Room Number: " + room.getRoomPrice());
             System.out.println("\t Room Price: " + room.getRoomPrice());
@@ -245,13 +262,18 @@ public class ReservationService {
         }
     }
 
+    public Collection<Reservation> getAllReservations() {
+        return reservations;
+    }
+
     public Collection<IRoom> findSuggestedRooms(Date checkInDate, Date checkOutDate) {
-        return findRooms(addSuggestedSevenDaysToOriginalReservation(checkInDate), addSuggestedSevenDaysToOriginalReservation(checkOutDate));
+        return findRooms(addSuggestedSevenDaysToOriginalReservation(checkInDate),
+                addSuggestedSevenDaysToOriginalReservation(checkOutDate));
     }
 
     //source: https://www.tabnine.com/code/java/methods/java.util.Calendar/set  &
     //https://www.geeksforgeeks.org/calendar-set-method-in-java-with-examples/
-    public Date addSuggestedSevenDaysToOriginalReservation(Date date){
+    public Date addSuggestedSevenDaysToOriginalReservation(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, 7);
