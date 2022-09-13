@@ -36,7 +36,7 @@ public class Customer {
     private void isEmailValid(String email){
         Pattern pattern = Pattern.compile(EMAIL_REGEX);
         if(!pattern.matcher(email).matches()) {
-            throw new IllegalArgumentException("The input is not valid. The email entered was:" +email);
+            throw new IllegalArgumentException("The input is not valid. The email entered was:" + email);
         }
     }
 

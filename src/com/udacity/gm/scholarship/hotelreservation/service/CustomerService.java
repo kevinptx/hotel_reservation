@@ -31,11 +31,12 @@ public class CustomerService {
     }
 
     public boolean isCustomerAlreadyExists(String email) {
-        boolean customerExistsFlag = false;
-        Customer customer = mapOfCustomers.get(email);
-        if(customer != null)
-            customerExistsFlag = true;
-        return customerExistsFlag;
+        return mapOfCustomers.get(email) != null; // a customer found
+//        boolean customerExistsFlag = false;
+//        Customer customer = mapOfCustomers.get(email);
+//        if(customer != null)
+//            customerExistsFlag = true;
+//        return customerExistsFlag;
     }
 
     public Customer getCustomer(String customerEmail){

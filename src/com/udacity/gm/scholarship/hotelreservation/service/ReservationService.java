@@ -238,7 +238,7 @@ public class ReservationService {
     public void printAllRooms() {
         int index = 1;
         for (IRoom room : roomsMap.values()) {
-            System.out.println("Room Number:" + index + ":");
+            //System.out.println("Room Index:" + index + ":");
             System.out.println("\t Room Number: " + room.getRoomNumber());
             System.out.println("\t Room Price: " + room.getRoomPrice());
             System.out.println("\t Room Type: " + room.getRoomType());
@@ -252,8 +252,7 @@ public class ReservationService {
     public void printRooms(Collection<IRoom> rooms) {
         int index = 1;
         for (IRoom room : roomsMap.values()) {
-            System.out.println("Room No." + room.getRoomNumber());
-            System.out.println("\t Room Number: " + room.getRoomPrice());
+            System.out.println("Room Number" + room.getRoomNumber());
             System.out.println("\t Room Price: " + room.getRoomPrice());
             System.out.println("\t Room Type: " + room.getRoomType());
             System.out.println("\t Is The Room Free: " + room.isFree());

@@ -140,10 +140,13 @@ public class MainMenu {
                 if (!doesCustomerExists) { // ask to create an account
                     System.out.println("you do not have account, create an account first");
                     displayCreateAccount(scanner);
-                } else { //
+                } else { //if there is an account
+                    //display all rooms
+                    System.out.println("=== displaying all rooms ===");
+                    ReservationService.getInstance().printAllRooms();
                     System.out.print("Enter room number > ");
                     String roomNumber = scanner.nextLine();
-                    if (checkIfRoomNumberIsValid(roomsAvailable, roomNumber)) { // check if room is valid or not if not it will never throw in
+                    if (checkIfRoomNumberIsValid(roomsAvailable, roomNumber)) { // check if room is valid or not if not it will never throw
                         if (checkIfThereIsCheckInOnSameDay(checkInDate)) {
                             Date alternateCheckInDate = ReservationService.getInstance().addSuggestedSevenDaysToOriginalReservation(checkInDate);
                             Date alternateCheckOutDate = ReservationService.getInstance().addSuggestedSevenDaysToOriginalReservation(checkOutDate);
@@ -162,6 +165,7 @@ public class MainMenu {
                 System.out.println("create an account first");
                 displayCreateAccount(scanner);
             }
+            System.out.println();
         }
         displayMainMenu(scanner);
     }
