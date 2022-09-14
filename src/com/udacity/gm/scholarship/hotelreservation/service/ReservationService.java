@@ -42,7 +42,6 @@ public class ReservationService {
         return roomCurrentlyExistsFlag;
     }
 
-
     public IRoom getARoom(String roomId) {
         IRoom room = null;
         for (Map.Entry<String, IRoom> singleRoom : roomsMap.entrySet()) {
@@ -99,42 +98,12 @@ public class ReservationService {
         return reservationCheckInCheckOutDatesInsideFlag;
     }
 
-    private boolean targetDateBetweenReservationCheckInCheckOutDates(Date targetDate, Reservation reservation) {
-        boolean isBetweenTrueFlag = false;
-        if (targetDate.compareTo(reservation.getCheckInDate()) > 0 && targetDate.compareTo(reservation.getCheckOutDate()) < 0)
-            isBetweenTrueFlag = true;
-        return isBetweenTrueFlag;
-    }
-
     private boolean reservationWithTheSameRoom(Reservation reservation, IRoom room) {
         boolean sameRoomFlag = false;
         if (reservation.getRoom().getRoomNumber().equalsIgnoreCase(room.getRoomNumber()))
             sameRoomFlag = true;
         return sameRoomFlag;
     }
-
-//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-//        List<String> conflictingRoomNumberList = getConflictingRoomNumbers(this.reservations, checkInDate, checkOutDate);
-//        List<IRoom> availableRoomList = new ArrayList<>();
-//        Iterator<Map.Entry<String, IRoom>> itr = roomsMap.entrySet().iterator();
-//        while (itr.hasNext()) {
-//            Map.Entry<String, IRoom> entry = itr.next();
-//            String roomNumber = entry.getKey();
-//            if (roomHasNoConflict(conflictingRoomNumberList, roomNumber))
-//                availableRoomList.add(entry.getValue());
-//        }
-//        return availableRoomList;
-//    }
-
-//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-//        Collection<IRoom> rooms = getAllRooms();
-//        for (Reservation reservation : reservations) {
-//            if (checkInDate.before(reservation.getCheckOutDate()) || checkOutDate.after(reservation.getCheckInDate())) {
-//                rooms.remove(reservation.getRoom());
-//            }
-//        }
-//        return rooms.stream().collect(Collectors.toList());
-//    }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
         List<String> conflictRoomNumberList = getConflictingRoomNumbers(reservations, checkInDate, checkOutDate);
@@ -168,11 +137,19 @@ public class ReservationService {
     }
 
     private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
-        boolean hasConflict = false;
-        if (reservation.getCheckInDate().equals(checkInDate) && reservation.getCheckOutDate().equals(checkOutDate)) {
-            hasConflict = true;
-        }
-        return hasConflict;
+        return targetDateBetweenReservationCheckInCheckOutDates(checkInDate, reservation) ||
+                targetDateBetweenReservationCheckInCheckOutDates(checkOutDate, reservation) ||
+                userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(checkInDate, checkOutDate, reservation);
+    }
+
+    private boolean userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(Date checkInDate, Date checkOutDate, Reservation reservation) {
+        return checkInDate.compareTo(reservation.getCheckInDate()) < 0 &&
+                checkOutDate.compareTo(reservation.getCheckOutDate()) > 0;
+    }
+
+    private boolean targetDateBetweenReservationCheckInCheckOutDates(Date checkInDate, Reservation reservation) {
+        return checkInDate.compareTo(reservation.getCheckInDate()) > 0 &&
+                checkInDate.compareTo(reservation.getCheckOutDate()) < 0;
     }
 
     private boolean roomHasNoConflict(List<String> conflictingRoomNumberList, String roomNumber) {
@@ -213,16 +190,6 @@ public class ReservationService {
         System.out.println(reservations);
     }
 
-
-//    public void printAllReservations(){
-//        int index = 1;
-//        for(Reservation reservation : reservations){
-//            System.out.println("Reservation No." + index + ":");
-//            System.out.println("\t" + reservation);
-//            System.out.println("");
-//            index++;
-//        }
-//    }
 
     public void printReservations(Collection<Reservation> reservations) {
         int index = 1;
