@@ -81,14 +81,11 @@ public class ReservationService {
     }
 
     private boolean reservationHasConflict(Reservation reservation, Date checkInDate, Date checkOutDate) {
-        boolean hasConflict = false;
-        if (targetDateBetweenReservationCheckInCheckOutDates(checkInDate, reservation) ||
-                targetDateBetweenReservationCheckInCheckOutDates(checkOutDate, reservation) ||
-                reservationCheckInCheckOutDatesInsideRequestedCheckInCheckOutDates(reservation, checkInDate, checkOutDate) ||
-                requestCheckInCheckOutDatesInsideReservationCheckInCheckOutDates(reservation, checkInDate, checkOutDate)) {
-            hasConflict = true;
-        }
-        return hasConflict;
+        Date reservationCheckInDate = reservation.getCheckInDate();
+        Date reservationCheckOutDate = reservation.getCheckOutDate();
+        return checkInDate.before(reservationCheckInDate) &&
+                checkOutDate.before(reservationCheckInDate) ||
+                checkInDate.after(reservationCheckOutDate) && checkOutDate.after(reservationCheckOutDate);
     }
 
     private boolean requestCheckInCheckOutDatesInsideReservationCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
@@ -111,7 +108,7 @@ public class ReservationService {
         List<String> conflictRoomNumberList = getConflictingRoomNumbers(reservations, checkInDate, checkOutDate);
         List<IRoom> availableRoomList = new ArrayList<>();
         for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
-            String roomNumber = entry.getKey();
+            String roomNumber = entry.getKey(); //string of roomNumbers
             if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
                 availableRoomList.add(entry.getValue());
             }
@@ -119,40 +116,47 @@ public class ReservationService {
         return availableRoomList;
     }
 
-
     public boolean areDatesReservedAlready(Reservation reservation, Date checkInDate, Date checkOutDate) {
-        if (checkInDate.before(reservation.getCheckInDate()) && checkOutDate.after(reservation.getCheckOutDate())) {
-            return true;
-        } else {
-            return false;
-        }
+//        if (checkInDate.before(reservation.getCheckInDate()) && checkOutDate.after(reservation.getCheckOutDate())) {
+        return checkInDate.after(reservation.getCheckInDate()) && checkOutDate.before(reservation.getCheckOutDate());
+    }
+
+    public boolean checkIfCheckInDateIsValid(Reservation reservation, Date checkInDate) {
+        return (checkInDate.after(reservation.getCheckInDate()) && checkInDate.before(reservation.getCheckInDate()));
     }
 
     private List<String> getConflictingRoomNumbers(Collection<Reservation> reservations, Date checkInDate, Date checkOutDate) {
         List<String> conflictRoomNumberList = new ArrayList<>();
         for (Reservation reservation : reservations) {
-            if (reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate)) {
+            if(areDatesReservedAlready(reservation, checkInDate, checkOutDate)){
                 conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
             }
+//            if (reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate)) {
+//                conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
+//            }
         }
         return conflictRoomNumberList;
     }
 
-    private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
-        return targetDateBetweenReservationCheckInCheckOutDates(checkInDate, reservation) ||
-                targetDateBetweenReservationCheckInCheckOutDates(checkOutDate, reservation) ||
-                userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(checkInDate, checkOutDate, reservation);
-    }
+//    private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
+//        return targetDateBetweenReservationCheckInCheckOutDates(checkInDate, reservation) ||
+//                targetDateBetweenReservationCheckInCheckOutDates(checkOutDate, reservation) ||
+//                userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(checkInDate, checkOutDate, reservation);
+//    }
 
-    private boolean userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(Date checkInDate, Date checkOutDate, Reservation reservation) {
-        return checkInDate.compareTo(reservation.getCheckInDate()) < 0 &&
-                checkOutDate.compareTo(reservation.getCheckOutDate()) > 0;
-    }
+//    private boolean userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(Date checkInDate, Date checkOutDate, Reservation reservation) {
+//        return checkInDate.compareTo(reservation.getCheckInDate()) < 0 &&
+//                checkOutDate.compareTo(reservation.getCheckOutDate()) > 0;
+//    }
 
-    private boolean targetDateBetweenReservationCheckInCheckOutDates(Date checkInDate, Reservation reservation) {
-        return checkInDate.compareTo(reservation.getCheckInDate()) > 0 &&
-                checkInDate.compareTo(reservation.getCheckOutDate()) < 0;
-    }
+//    private boolean targetDateBetweenReservationCheckInCheckOutDates(Date checkInDate, Reservation reservation) {
+//        return checkInDate.compareTo(reservation.getCheckInDate()) > 0 &&
+//                checkInDate.compareTo(reservation.getCheckOutDate()) < 0; //validate if checkin date is after
+//    }
+
+    //checkin date
+        //reservation must be between here
+    //checkout date
 
     private boolean roomHasNoConflict(List<String> conflictingRoomNumberList, String roomNumber) {
         boolean noConflictFlag = true;
