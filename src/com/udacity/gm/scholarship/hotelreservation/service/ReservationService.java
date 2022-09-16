@@ -61,6 +61,8 @@ public class ReservationService {
         if (!requestedRoomHasConflictWithExistingReservation(room, checkInDate, checkOutDate)) {
             reservation = new Reservation(customer, room, checkInDate, checkOutDate);
             reservations.add(reservation);
+        } else {
+            System.out.println("I did not find any rooms.");
         }
         return reservation;
     }
