@@ -57,4 +57,12 @@ public class HotelResource {
     public Date addSuggestedSevenDays(Date date){
         return reservationService.addSuggestedSevenDaysToOriginalReservation(date);
     }
+
+    public void printRooms(Collection<IRoom> rooms) {
+        ReservationService.getInstance().printRooms(rooms);
+    }
+
+    public void printAllRooms(Collection<IRoom> availableRoomCollection, String msg) {
+        ReservationService.getInstance().printAllRooms();
+    }
 }

@@ -5,7 +5,6 @@ import com.udacity.gm.scholarship.hotelreservation.model.IRoom;
 import com.udacity.gm.scholarship.hotelreservation.model.Reservation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 //Reference: Mentor session 7-27-22, Mentor Session 7-30-22, and Mentor Session 7-31-22
 public class ReservationService {
@@ -56,15 +55,29 @@ public class ReservationService {
         return roomsMap.values();
     }
 
-    public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate) {
+    public Reservation reserveARoom(Customer customer, IRoom room,
+                                    Date checkInDate, Date checkOutDate) {
+        Collection<IRoom> availableRooms = findRooms(checkInDate, checkOutDate);
         Reservation reservation = null;
-        if (!requestedRoomHasConflictWithExistingReservation(room, checkInDate, checkOutDate)) {
+        if(requestedRoomAvailable(availableRooms, room)) {
             reservation = new Reservation(customer, room, checkInDate, checkOutDate);
             reservations.add(reservation);
         } else {
-            System.out.println("I did not find any rooms.");
+            System.out.println("Was not able to find rooms that are available with checkInDate of: " +
+                    checkInDate + " and CheckOutDate of: " + checkOutDate);
         }
         return reservation;
+    }
+
+    private boolean requestedRoomAvailable(Collection<IRoom> availableRooms, IRoom room) {
+        boolean isRequestedRoomAvailableFlag = false;
+        for(IRoom eachRoom : availableRooms) {
+            if(eachRoom.getRoomNumber().equalsIgnoreCase(room.getRoomNumber())) {
+                isRequestedRoomAvailableFlag = true;
+                break;
+            }
+        }
+        return isRequestedRoomAvailableFlag;
     }
 
     private boolean requestedRoomHasConflictWithExistingReservation(IRoom room, Date checkInDate, Date checkOutDate) {
@@ -105,13 +118,15 @@ public class ReservationService {
     }
 
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-        List<String> conflictRoomNumberList = getConflictingRoomNumbers(reservations, checkInDate, checkOutDate);
+        List<String> conflictRoomNumberList = getConflictingRoomNumbers(this.reservations,
+                checkInDate, checkOutDate);
         List<IRoom> availableRoomList = new ArrayList<>();
-        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
-            String roomNumber = entry.getKey(); //string of roomNumbers
-            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
+        Iterator<Map.Entry<String, IRoom>> itr = roomsMap.entrySet().iterator();
+        while(itr.hasNext()) {
+            Map.Entry<String, IRoom> entry = itr.next();
+            String roomNumber = entry.getKey();
+            if(roomHasNoConflict(conflictRoomNumberList, roomNumber))
                 availableRoomList.add(entry.getValue());
-            }
         }
         return availableRoomList;
     }
@@ -125,49 +140,66 @@ public class ReservationService {
         return (checkInDate.after(reservation.getCheckInDate()) && checkInDate.before(reservation.getCheckInDate()));
     }
 
-    private List<String> getConflictingRoomNumbers(Collection<Reservation> reservations, Date checkInDate, Date checkOutDate) {
-        List<String> conflictRoomNumberList = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            if(areDatesReservedAlready(reservation, checkInDate, checkOutDate)){
-                conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
-            }
-//            if (reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate)) {
-//                conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
-//            }
-        }
-        return conflictRoomNumberList;
-    }
-
-//    private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation, Date checkInDate, Date checkOutDate) {
-//        return targetDateBetweenReservationCheckInCheckOutDates(checkInDate, reservation) ||
-//                targetDateBetweenReservationCheckInCheckOutDates(checkOutDate, reservation) ||
-//                userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(checkInDate, checkOutDate, reservation);
-//    }
-
-//    private boolean userReservationCheckInCheckOutDatesWithinCheckInDateCheckOutDate(Date checkInDate, Date checkOutDate, Reservation reservation) {
-//        return checkInDate.compareTo(reservation.getCheckInDate()) < 0 &&
-//                checkOutDate.compareTo(reservation.getCheckOutDate()) > 0;
-//    }
-
-//    private boolean targetDateBetweenReservationCheckInCheckOutDates(Date checkInDate, Reservation reservation) {
-//        return checkInDate.compareTo(reservation.getCheckInDate()) > 0 &&
-//                checkInDate.compareTo(reservation.getCheckOutDate()) < 0; //validate if checkin date is after
-//    }
-
-    //checkin date
-        //reservation must be between here
-    //checkout date
-
-    private boolean roomHasNoConflict(List<String> conflictingRoomNumberList, String roomNumber) {
+    private boolean roomHasNoConflict(List<String> conflictRoomNumberList, String roomNumber) {
         boolean noConflictFlag = true;
-        for (String eachRoomNumber : conflictingRoomNumberList) {
-            if (eachRoomNumber.equalsIgnoreCase(roomNumber))
+        for(String eachRoomNumber : conflictRoomNumberList) {
+            if(eachRoomNumber.equalsIgnoreCase(roomNumber)) {
                 noConflictFlag = false;
-            break;
+                break;
+            }
         }
         return noConflictFlag;
     }
 
+    private List<String> getConflictingRoomNumbers(Collection<Reservation> reservations,
+                                                Date checkInDate, Date checkOutDate) {
+        List<String> conflictRoomNumberList = new ArrayList<>();
+        for(Reservation reservation : reservations) {
+            if(reservationHasConflictWithCheckInCheckOutDates(reservation, checkInDate, checkOutDate))
+                conflictRoomNumberList.add(reservation.getRoom().getRoomNumber());
+        }
+        return conflictRoomNumberList;
+    }
+
+    private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation,
+                                                             Date checkInDate, Date checkOutDate) {
+        boolean hasConflict = false;
+        if(reservationCheckInOutDateSameWithRequestedCheckInOutDate(reservation, checkInDate, checkOutDate)
+                || reservationCheckInOutDateConflictWithRequestCheckInOutDate(reservation, checkInDate, checkOutDate)) {
+            hasConflict = true;
+        }
+        return hasConflict;
+    }
+
+    private boolean reservationCheckInOutDateConflictWithRequestCheckInOutDate(Reservation reservation,
+                                                                               Date checkInDate, Date checkOutDate) {
+        boolean hasConflict =false;
+        if(reservation.getCheckInDate().before(checkOutDate)
+                && reservation.getCheckOutDate().after(checkInDate)) {
+            hasConflict = true;
+        }
+        return hasConflict;
+    }
+
+    private boolean reservationCheckInOutDateSameWithRequestedCheckInOutDate(Reservation reservation,
+                                                                           Date checkInDate, Date checkOutDate) {
+        boolean isSameFlag = false;
+        if(reservation.getCheckOutDate().compareTo(checkInDate) == 0
+                && reservation.getCheckOutDate().compareTo(checkOutDate) == 0) {
+            isSameFlag = true;
+        }
+        return isSameFlag;
+    }
+
+    private boolean reservationCheckInOutDateConflictWithRequestedCheckInOutDate(Reservation reservation,
+                                                                               Date checkInDate, Date checkOutDate) {
+        boolean hasConflict =false;
+        if(reservation.getCheckInDate().before(checkOutDate)
+                && reservation.getCheckOutDate().after(checkInDate)) {
+            hasConflict = true;
+        }
+        return hasConflict;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -183,13 +215,21 @@ public class ReservationService {
     }
 
     public Collection<Reservation> getCustomersReservation(Customer customer) {
-        Collection<Reservation> returnedReservations = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            if (reservation.getCustomer().equals(customer)) {
-                returnedReservations.add(reservation);
-            }
+        List<Reservation> customerReservationList = new ArrayList<>();
+        String customerEmail = customer.getEmail();
+        for(Reservation reservation : reservations) {
+            if(isReservationBelongToCustomer(reservation, customerEmail))
+                customerReservationList.add(reservation);
         }
-        return returnedReservations;
+        return customerReservationList;
+    }
+
+    private boolean isReservationBelongToCustomer(Reservation reservation, String customerEmail) {
+        boolean doesReservationBelongCustomer = false;
+        String reservationCustomerEmail = reservation.getCustomer().getEmail();
+        if(reservationCustomerEmail.equalsIgnoreCase(customerEmail))
+            doesReservationBelongCustomer = true;
+        return doesReservationBelongCustomer;
     }
 
     public void printAllReservations() {
@@ -224,8 +264,8 @@ public class ReservationService {
     //this is to print specific rooms based on the parameter passed in.
     public void printRooms(Collection<IRoom> rooms) {
         int index = 1;
-        for (IRoom room : roomsMap.values()) {
-            System.out.println("Room Number" + room.getRoomNumber());
+        for(IRoom room : rooms) {
+            System.out.println("Room Number: " + room.getRoomNumber());
             System.out.println("\t Room Price: " + room.getRoomPrice());
             System.out.println("\t Room Type: " + room.getRoomType());
             System.out.println("\t Is The Room Free: " + room.isFree());
@@ -250,5 +290,11 @@ public class ReservationService {
         calendar.setTime(date);
         calendar.add(Calendar.DATE, 7);
         return calendar.getTime();
+    }
+
+    //michael's suggestion:
+    private static Date getWeekAfter(Date date){
+        long datePlus7Days = date.getTime()+7*24*60*1000;
+        return new Date(datePlus7Days);
     }
 }

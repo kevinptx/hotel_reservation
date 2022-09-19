@@ -36,6 +36,9 @@ public class AdminResource {
         return customerService.getAllCustomers();
     }
 
+    public boolean customerAlreadyExists(String email) {
+        return CustomerService.getInstance().customerAlreadyExists(email);
+    }
     public void displayAllReservations(){
         reservationService.printAllReservations();
     }

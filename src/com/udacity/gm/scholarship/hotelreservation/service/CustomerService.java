@@ -23,20 +23,19 @@ public class CustomerService {
     public void addCustomer(String email, String firstName, String lastName) throws
             IllegalArgumentException {
         Customer newCustomer = new Customer(firstName, lastName, email);
-        if(!isCustomerAlreadyExists(email)){
+        if(!customerAlreadyExists(email)){
             mapOfCustomers.put(email, newCustomer);
         } else {
             throw new IllegalArgumentException("The input email" + email + "already exists in our database!");
         }
     }
 
-    public boolean isCustomerAlreadyExists(String email) {
-        return mapOfCustomers.get(email) != null; // a customer found
-//        boolean customerExistsFlag = false;
-//        Customer customer = mapOfCustomers.get(email);
-//        if(customer != null)
-//            customerExistsFlag = true;
-//        return customerExistsFlag;
+    public boolean customerAlreadyExists(String email) {
+        boolean customerExistFlag = false;
+        Customer customer = mapOfCustomers.get(email);
+        if(customer != null)
+            customerExistFlag = true;
+        return customerExistFlag;
     }
 
     public Customer getCustomer(String customerEmail){
