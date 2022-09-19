@@ -106,7 +106,7 @@ public class MainMenu {
         displayMainMenu(scanner);
     }
 
-    //diff approach based on michael's example:
+    //diff approach based on Michael's example during the connect session:
 
     public static void findAndReserveARoom(Scanner scanner) {
         String checkInDateDisplayMessage = "Enter CheckIn Date mm/dd/yyyy in the following format: 02/01/2022";
@@ -119,8 +119,8 @@ public class MainMenu {
         if(availableRoomCollection.isEmpty()) {
             availableRoomCollection = hotelResource.findARoom(getDateAdd7Days(checkInDate),
                     getDateAdd7Days(checkOutDate));
-            String msg = "Sorry, we could not find any room which is available according to the time period you requested. These are the rooms available";
-            hotelResource.printAllRooms(availableRoomCollection, msg);
+            System.out.println("Sorry, we could not find any room which is available according to the time period you requested. These are the rooms available");
+            hotelResource.printRooms(availableRoomCollection);
         } else {
             hotelResource.printRooms(availableRoomCollection);
         }
@@ -135,12 +135,22 @@ public class MainMenu {
                     System.out.println("It seems you do not have an account with us, " +
                             "please create an account and then try to reserve a room again.");
                     displayMainMenu(scanner);
-                } else {
+                } else { //if customer exists
+                    availableRoomCollection = ReservationService.getInstance().findRooms(checkInDate, checkOutDate);
                     Collection<IRoom> roomsAvailable = ReservationService.getInstance().findRooms(checkInDate, checkOutDate);
-                    ReservationService.getInstance().printRooms(roomsAvailable); // print all recommended rooms
+                    if(roomsAvailable.isEmpty()){
+                        System.out.println("No rooms available for entered CheckIn/CheckOut date but we have alternative date suggestions for you.");
+                        availableRoomCollection = hotelResource.findARoom(getDateAdd7Days(checkInDate),
+                                getDateAdd7Days(checkOutDate));
+                        ReservationService.getInstance().printRooms(availableRoomCollection);
+                    } else { //if we find rooms
+                        ReservationService.getInstance().printRooms(availableRoomCollection);
+                    }
+                    //ReservationService.getInstance().printRooms(roomsAvailable);
+                    // print all recommended rooms
                     System.out.println("What room number would you like to reserve?");
                     String roomNumber = scanner.nextLine();
-                    if(isSelectedRoomNumberValid(availableRoomCollection, roomNumber)) {
+                    if(isSelectedRoomNumberValid(availableRoomCollection, roomNumber)) { //if selected is valid
                         IRoom selectedRoom = hotelResource.getRoom(roomNumber);
                         hotelResource.bookARoom(customerEmail,
                                 selectedRoom, checkInDate, checkOutDate);

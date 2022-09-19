@@ -10,10 +10,10 @@ import java.util.Collection;
 import java.util.Date;
 
 public class HotelResource {
-    private static ReservationService reservationService = ReservationService.getInstance();
-    private static CustomerService customerService = CustomerService.getInstance();
+    private static final ReservationService reservationService = ReservationService.getInstance();
+    private static final CustomerService customerService = CustomerService.getInstance();
 
-    private static HotelResource HOTEL_RESOURCE_INSTANCE = new HotelResource();
+    private static final HotelResource HOTEL_RESOURCE_INSTANCE = new HotelResource();
 
     private HotelResource(){}
 
@@ -38,7 +38,8 @@ public class HotelResource {
     }
 
     public Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate){
-        return reservationService.reserveARoom(getCustomer(customerEmail), room, checkInDate, checkOutDate);
+        Customer customer = CustomerService.getInstance().getCustomer(customerEmail);
+        return reservationService.reserveARoom(customer, room, checkInDate, checkOutDate);
     }
 
     public Collection<Reservation> getCustomersReservations(String customerEmail){

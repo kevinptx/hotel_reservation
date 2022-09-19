@@ -42,13 +42,7 @@ public class ReservationService {
     }
 
     public IRoom getARoom(String roomId) {
-        IRoom room = null;
-        for (Map.Entry<String, IRoom> singleRoom : roomsMap.entrySet()) {
-            if (singleRoom.getKey().equals(roomId)) {
-                room = singleRoom.getValue();
-            }
-        }
-        return room;
+        return roomsMap.get(roomId);
     }
 
     public Collection<IRoom> getAllRooms() {
@@ -63,8 +57,7 @@ public class ReservationService {
             reservation = new Reservation(customer, room, checkInDate, checkOutDate);
             reservations.add(reservation);
         } else {
-            System.out.println("Was not able to find rooms that are available with checkInDate of: " +
-                    checkInDate + " and CheckOutDate of: " + checkOutDate);
+            System.out.println("I was not able to find available rooms");
         }
         return reservation;
     }
@@ -121,12 +114,11 @@ public class ReservationService {
         List<String> conflictRoomNumberList = getConflictingRoomNumbers(this.reservations,
                 checkInDate, checkOutDate);
         List<IRoom> availableRoomList = new ArrayList<>();
-        Iterator<Map.Entry<String, IRoom>> itr = roomsMap.entrySet().iterator();
-        while(itr.hasNext()) {
-            Map.Entry<String, IRoom> entry = itr.next();
+        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
             String roomNumber = entry.getKey();
-            if(roomHasNoConflict(conflictRoomNumberList, roomNumber))
+            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
                 availableRoomList.add(entry.getValue());
+            }
         }
         return availableRoomList;
     }
