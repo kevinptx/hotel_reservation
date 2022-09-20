@@ -80,7 +80,7 @@ public class AdminMenu {
                 roomPrice = Double.valueOf(scanner.nextLine());
                 break;
             } catch (NumberFormatException e) {
-                System.out.println("You failed to enter a number. Try again.");
+                System.out.println("You failed to enter a number. Please try again.");
             }
         }
         while (true) {

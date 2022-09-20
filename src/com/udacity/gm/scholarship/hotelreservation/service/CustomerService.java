@@ -18,7 +18,7 @@ public class CustomerService {
         }
         return CUSTOMER_SERVICE_INSTANCE;
     }
-    private Map<String, Customer> mapOfCustomers = new HashMap<>();
+    private final Map<String, Customer> mapOfCustomers = new HashMap<>();
 
     public void addCustomer(String email, String firstName, String lastName) throws
             IllegalArgumentException {
