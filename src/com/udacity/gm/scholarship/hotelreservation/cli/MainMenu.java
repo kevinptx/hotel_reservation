@@ -118,8 +118,6 @@ public class MainMenu {
         } else {
             HotelResource.getInstance().printRooms(availableRoomCollection);
         }
-
-
         if (answerIsYes("Do you want to book a room? (y/n)", scanner)) {
             if (answerIsYes("Do you already have an account with us? (y/n)", scanner)) {
                 System.out.print("Enter your email > ");
@@ -135,7 +133,8 @@ public class MainMenu {
                             Date recommendedCheckInDate = getDateAdd7Days(checkInDate);
                             Date recommendedCheckOutDate = getDateAdd7Days(checkOutDate);
                             availableRoomCollection = HotelResource.getInstance().findARoom(recommendedCheckInDate, recommendedCheckOutDate);
-                            System.out.println("Sorry the room is reserved on that day, but we have recommended dates for an alternative check in");
+                            System.out.println("Sorry the room is reserved on that day, but we have recommended dates for alternative check in and check out seven days beyond your initial request: ");
+                            System.out.println("Recommended Check In date with 7 Days Added: " + recommendedCheckInDate + "\nRecommended Check Out date with 7 Days Added: " + recommendedCheckOutDate);
                             HotelResource.getInstance().printRooms(availableRoomCollection);
                         }
                         IRoom selectedRoom = HotelResource.getInstance().getRoom(roomNumber);
