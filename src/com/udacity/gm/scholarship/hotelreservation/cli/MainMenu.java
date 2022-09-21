@@ -185,9 +185,9 @@ public class MainMenu {
 
     //code suggested by reviewer:
     public static void bookRecommendedRooms(Collection<IRoom> availableRooms, Scanner scanner, Date checkInDate, Date checkOutDate) {
-        Date newCheckin = getDateAdd7Days(checkInDate);
-        Date newCheckout = getDateAdd7Days(checkOutDate);
-        makeABooking(availableRooms, scanner, newCheckin, newCheckout);
+        Date newCheckIn = getDateAdd7Days(checkInDate);
+        Date newCheckOut = getDateAdd7Days(checkOutDate);
+        makeABooking(availableRooms, scanner, newCheckIn, newCheckOut);
     }
 
     //code suggested by reviewer:
