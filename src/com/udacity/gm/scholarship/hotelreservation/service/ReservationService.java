@@ -108,19 +108,75 @@ public class ReservationService {
         return sameRoomFlag;
     }
 
+//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
+//        List<String> conflictRoomNumberList = getConflictingRoomNumbers(
+//                reservations,
+//                checkInDate,
+//                checkOutDate);
+//        List<IRoom> availableRoomList = new ArrayList<>();
+//        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
+//            String roomNumber = entry.getKey();
+//            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
+//                availableRoomList.add(entry.getValue());
+//            }
+//        }
+//        return availableRoomList;
+//    }
+
+    //new method suggested by reviewer:
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-        List<String> conflictRoomNumberList = getConflictingRoomNumbers(
-                reservations,
-                checkInDate,
-                checkOutDate);
-        List<IRoom> availableRoomList = new ArrayList<>();
-        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
-            String roomNumber = entry.getKey();
-            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
-                availableRoomList.add(entry.getValue());
+        return getAvailableRooms(checkInDate, checkOutDate);
+    }
+
+    public Collection<IRoom> getAvailableRooms(Date checkInDate, Date checkOutDate) {
+        Collection<Reservation> reservations = getAllReservations();
+        Collection<IRoom> allRooms = getAllRooms();
+        Collection<IRoom> availableRooms = new ArrayList<>();
+
+        // if no reservation has been made, all rooms are available
+        if (reservations.isEmpty()) {
+            return allRooms;
+        }
+
+        for (IRoom room: allRooms) {
+            // if rooms is not reserved, add it to vailable rooms
+            if (isRoomFree(room, checkInDate, checkOutDate)) {
+                availableRooms.add(room);
             }
         }
-        return availableRoomList;
+
+        return availableRooms;
+    }
+
+    //new code suggested by reviewer:
+    private boolean isRoomFree(IRoom room, Date checkIn, Date checkOut) {
+        Collection<Reservation> reservations = getAllReservations();
+        boolean isFree = true;
+        for (Reservation reservation: reservations) {
+            IRoom reservedRoom = reservation.getRoom();
+            // if this room has been reserved, also check if dates conflict
+            if (reservedRoom.getRoomNumber().equals(room.getRoomNumber())) {
+                isFree = false;
+                if (!reservationConflictsWithDateRange(reservation, checkIn, checkOut)) {
+                    // if the reservation does not conflict with the range, it means the room has been reserved
+                    return true;
+                }
+            }
+        }
+
+        // if we pass though the loop successfully, then the room has not been reserved
+        // because it does not conflict with any reserved room
+        // see how breaking code into descriptive, small chunks makes it easy?
+        return isFree;
+    }
+
+    //new code suggested by reviewer:
+    private boolean reservationConflictsWithDateRange(Reservation reservation, Date checkin, Date checkout) {
+        // Please,see explanation in the sections below
+        // the room is free is you check into the room after the other person has checked out
+        // or you check out  of the room before then person checks in
+        boolean reservationDoesNotConflict = checkout.before(reservation.getCheckInDate()) || checkin.after(reservation.getCheckOutDate());
+        return !(reservationDoesNotConflict);
     }
 
     public boolean areDatesReservedAlready(Reservation reservation, Date checkInDate, Date checkOutDate) {
