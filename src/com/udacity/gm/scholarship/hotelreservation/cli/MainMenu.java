@@ -138,8 +138,8 @@ public class MainMenu {
                             HotelResource.getInstance().printRooms(availableRoomCollection);
                         } else {
                             IRoom selectedRoom = HotelResource.getInstance().getRoom(roomNumber);
-                            Customer customerWhoMakeReservation = HotelResource.getInstance().getCustomer(emailInput);
-                            HotelResource.getInstance().bookARoom(customerWhoMakeReservation.getEmail(), selectedRoom, checkInDate, checkOutDate);
+                            Customer customerWhoMadeReservation = HotelResource.getInstance().getCustomer(emailInput);
+                            HotelResource.getInstance().bookARoom(customerWhoMadeReservation.getEmail(), selectedRoom, checkInDate, checkOutDate);
                             System.out.println("Room was booked successfully. Enjoy your stay with us!");
                         }
                     } else {
