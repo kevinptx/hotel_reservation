@@ -129,21 +129,22 @@ public class MainMenu {
                     System.out.print("Enter room number >");
                     String roomNumber = scanner.nextLine();
                     if (isSelectedRoomNumberValid(availableRoomCollection, roomNumber)) {
-                        if (checkIfThereIsCheckInOnSameDay(checkInDate)) {
+                        if (checkIfThereIsCheckInOnSameDay(checkInDate)) { //if there is a reservation on the same day
                             Date recommendedCheckInDate = getDateAdd7Days(checkInDate);
                             Date recommendedCheckOutDate = getDateAdd7Days(checkOutDate);
                             availableRoomCollection = HotelResource.getInstance().findARoom(recommendedCheckInDate, recommendedCheckOutDate);
                             System.out.println("Sorry the room is reserved on that day, but we have recommended dates for alternative check in and check out seven days beyond your initial request: ");
                             System.out.println("Recommended Check In date with 7 Days Added: " + recommendedCheckInDate + "\nRecommended Check Out date with 7 Days Added: " + recommendedCheckOutDate);
                             HotelResource.getInstance().printRooms(availableRoomCollection);
+                        } else {
+                            IRoom selectedRoom = HotelResource.getInstance().getRoom(roomNumber);
+                            Customer customerWhoMakeReservation = HotelResource.getInstance().getCustomer(emailInput);
+                            HotelResource.getInstance().bookARoom(customerWhoMakeReservation.getEmail(), selectedRoom, checkInDate, checkOutDate);
+                            System.out.println("Room was booked successfully. Enjoy your stay with us!");
                         }
-                        IRoom selectedRoom = HotelResource.getInstance().getRoom(roomNumber);
-                        Customer customerWhoMakeReservation = HotelResource.getInstance().getCustomer(emailInput);
-                        HotelResource.getInstance().bookARoom(customerWhoMakeReservation.getEmail(), selectedRoom, checkInDate, checkOutDate);
                     } else {
                         System.out.println("The room number is invalid, Please try again...");
                     }
-
                 }
             } else {
                 System.out.println("Please create an account first. Thank you");
