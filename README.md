@@ -11,7 +11,7 @@ The project may be run by executing the [hotel_reservation](https://github.com/k
 on your favorite Java IDEA.
 
 
-![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif width="500" height="500")
+![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif | width="500" height="500")
 
 ## User Scenarios
 The application provides four user scenarios:
