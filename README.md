@@ -1,7 +1,7 @@
 # hotel_reservation is a Java project for hotel reservation management in order to demonstrate advanced Java programming skills.
 
 This is a `Java` application for booking hotel rooms which I developed for Udacity's [Java Programming Course](https://www.udacity.com/course/java-programming-nanodegree--nd079).
-According to the above linked Udacity website, "This Nanodegree program is intended to elevate your Java abilities and teach you the skills used by Java developers to design, code, test and deploy cutting-edge Java software. 
+According to the linked [Udacity website](https://www.udacity.com/course/java-programming-nanodegree--nd079), "This Nanodegree program is intended to elevate your Java abilities and teach you the skills used by Java developers to design, code, test and deploy cutting-edge Java software. 
 It is ideal for intermediate programmers with little Java experience who want to set themselves up for success as a professional Java developer and deploy functional Java-based applications of their own creation."
 
 The objective of the hotel_reservation project was to code a hotel application that allows users to book and manage room reservations in a hotel.
