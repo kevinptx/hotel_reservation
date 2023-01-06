@@ -8,7 +8,7 @@ The objective of the hotel_reservation project was to code a hotel application t
 The project utilizes the Java programming language to allow one to increase their Java development skills to an advanced level.
 
 The project may be run by executing the [HotelReservationApp](https://github.com/kevinptx/hotel_reservation/blob/main/src/com/udacity/gm/scholarship/hotelreservation/HotelReservationApp.java) class
-on your favorite Java IDE. For Java programming, I use [IntelliJ IDEA] (https://www.jetbrains.com/idea/). 
+on your favorite Java IDE. For Java programming, I use [IntelliJ IDEA](https://www.jetbrains.com/idea/). 
 
 ![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif)
 
