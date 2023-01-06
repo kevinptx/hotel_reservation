@@ -49,7 +49,7 @@ The application will have customer accounts. Each account has:
 1. <b>A unique email for the customer</b>: RegEx is used to check that the email is in the correct format (i.e., name@domain.com).
 2. <b>A first name and last name</b>.
 3. The email RegEx utilized for the purpose of this app is basic for the specific purpose of this project's requirements, and it may not cover all valid email formats observed globally. 
-> For example "doej@theaustralian.com.au" would not be accepted by the RegEx this project utilizes because it ends with ".au" instead of ".com". 
+> For example "name@theaustralian.com.au" would not be accepted by the RegEx this project utilizes because it ends with ".au" instead of ".com". 
 Creating RegEx for the above example scenario was not a requirement for this project. 
 
 ### Error Requirements
