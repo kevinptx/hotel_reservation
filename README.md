@@ -10,8 +10,6 @@ The project utilizes the Java programming language to allow one to increase thei
 The project may be run by executing the [hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/out/production/hotel_reservation/com/udacity/gm/scholarship/hotelreservation/HotelReservationApp.class) class
 on your favorite Java IDEA.
 
-<img src="https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif" width="300" height="250"/>
-
 ![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif)
 
 ## User Scenarios
