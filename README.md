@@ -1,4 +1,4 @@
-# hotel_reservation is a Java project for hotel reservation management in order to demonstrate Java programming skills.
+# hotel_reservation is a Java project for hotel reservation management in order to demonstrate advanced Java programming skills.
 
 This is a `java` application for booking hotel rooms which I developed for the Udacity's [Java Programming Course](https://www.udacity.com/course/java-programming-nanodegree--nd079).
 According to the above Udacity website, "This Nanodegree program is intended to elevate your Java abilities and teach you the skills used by Java developers to design, code, test and deploy cutting-edge Java software. 
@@ -9,6 +9,8 @@ The project utilizes the Java programming language to allow one to increase thei
 
 The project may be run by executing the [hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/out/production/hotel_reservation/com/udacity/gm/scholarship/hotelreservation/HotelReservationApp.class) class
 on your favorite Java IDEA.
+
+<img src="[/images/output/video1.gif](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif)" width="500" height="500"/>
 
 ![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif)
 
