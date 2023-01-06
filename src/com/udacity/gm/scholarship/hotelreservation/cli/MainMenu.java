@@ -103,57 +103,6 @@ public class MainMenu {
         displayMainMenu(scanner);
     }
 
-    //diff approach based on Michael's example during the connect session:
-
-//    private static void findAndReserveARoom(Scanner scanner) {
-//        Date checkInDate = parseInputStringToDate("Enter Check In date in mm/dd/yyyy format", scanner);
-//        Date checkOutDate = parseInputStringToDate("Enter Check Out date in mm/dd/yyyy format", scanner);
-//        Collection<IRoom> availableRoomCollection = HotelResource.getInstance().findARoom(checkInDate, checkOutDate);
-//        if (availableRoomCollection.isEmpty()) { // check if there are no rooms available for the date
-//            Date recommendedCheckInDate = getDateAdd7Days(checkInDate);
-//            Date recommendedCheckOutDate = getDateAdd7Days(checkOutDate);
-//            availableRoomCollection = HotelResource.getInstance().findARoom(recommendedCheckInDate, recommendedCheckOutDate);
-//            System.out.println("Sorry, we can not find available rooms but we have provided recommended rooms");
-//            HotelResource.getInstance().printRooms(availableRoomCollection);
-//        } else {
-//            HotelResource.getInstance().printRooms(availableRoomCollection);
-//        }
-//        if (answerIsYes("Do you want to book a room? (y/n)", scanner)) {
-//            if (answerIsYes("Do you already have an account with us? (y/n)", scanner)) {
-//                System.out.print("Enter your email > ");
-//                String emailInput = scanner.nextLine();
-//                if (!CustomerService.getInstance().customerAlreadyExists(emailInput)) {
-//                    System.out.print("You do not have account. Please create an account first then try again.");
-//                    displayCreateAccount(scanner);
-//                } else {
-//                    System.out.print("Enter room number >");
-//                    String roomNumber = scanner.nextLine();
-//                    if (isSelectedRoomNumberValid(availableRoomCollection, roomNumber)) {
-//                        if (checkIfThereIsCheckInOnSameDay(checkInDate)) { //if there is a reservation on the same day
-//                            Date recommendedCheckInDate = getDateAdd7Days(checkInDate);
-//                            Date recommendedCheckOutDate = getDateAdd7Days(checkOutDate);
-//                            availableRoomCollection = HotelResource.getInstance().findARoom(recommendedCheckInDate, recommendedCheckOutDate);
-//                            System.out.println("Sorry the room is reserved on that day, but we have recommended dates for alternative check in and check out seven days beyond your initial request: ");
-//                            System.out.println("Recommended Check In date with 7 Days Added: " + recommendedCheckInDate + "\nRecommended Check Out date with 7 Days Added: " + recommendedCheckOutDate);
-//                            HotelResource.getInstance().printRooms(availableRoomCollection);
-//                        } else {
-//                            IRoom selectedRoom = HotelResource.getInstance().getRoom(roomNumber);
-//                            Customer customerWhoMadeReservation = HotelResource.getInstance().getCustomer(emailInput);
-//                            HotelResource.getInstance().bookARoom(customerWhoMadeReservation.getEmail(), selectedRoom, checkInDate, checkOutDate);
-//                            System.out.println("Room was booked successfully. Enjoy your stay with us!");
-//                        }
-//                    } else {
-//                        System.out.println("The room number is invalid, Please try again...");
-//                    }
-//                }
-//            } else {
-//                System.out.println("Please create an account first. Thank you");
-//                displayCreateAccount(scanner);
-//            }
-//        }
-//        displayMainMenu(scanner);
-//    }
-
     //code suggested by reviewer:
 
     private static void findAndReserveARoom(Scanner scanner) {

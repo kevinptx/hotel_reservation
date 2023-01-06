@@ -20,11 +20,9 @@ public class ReservationService {
         }
         return RESERVATION_SERVICE_INSTANCE;
     }
-    //private Collection<Reservation> reservations = new ArrayList<>();
 
     private static final Map<String, IRoom> roomsMap = new HashMap<>();
 
-    //    private static Collection<Reservation> reservations = new HashSet<>();
     private static final Collection<Reservation> reservations = new ArrayList<>();
 
     public void addRoom(IRoom room) {
@@ -107,21 +105,6 @@ public class ReservationService {
         boolean sameRoomFlag = reservation.getRoom().getRoomNumber().equalsIgnoreCase(room.getRoomNumber());
         return sameRoomFlag;
     }
-
-//    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
-//        List<String> conflictRoomNumberList = getConflictingRoomNumbers(
-//                reservations,
-//                checkInDate,
-//                checkOutDate);
-//        List<IRoom> availableRoomList = new ArrayList<>();
-//        for (Map.Entry<String, IRoom> entry : roomsMap.entrySet()) {
-//            String roomNumber = entry.getKey();
-//            if (roomHasNoConflict(conflictRoomNumberList, roomNumber)) {
-//                availableRoomList.add(entry.getValue());
-//            }
-//        }
-//        return availableRoomList;
-//    }
 
     //new method suggested by reviewer:
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate) {
@@ -212,12 +195,6 @@ public class ReservationService {
 
     private boolean reservationHasConflictWithCheckInCheckOutDates(Reservation reservation,
                                                                    Date checkInDate, Date checkOutDate) {
-//        boolean hasConflict = false;
-//        if(reservationCheckInOutDateSameWithRequestedCheckInOutDate(reservation, checkInDate, checkOutDate)
-//                || reservationCheckInOutDateConflictWithRequestCheckInOutDate(reservation, checkInDate, checkOutDate)) {
-//            hasConflict = true;
-//        }
-//        return hasConflict;
         return targetDateBetweenReservationCheckInOutDates(checkInDate, reservation) ||
                 targetDateBetweenReservationCheckInOutDates(checkOutDate, reservation) ||
                 reservationCheckInOutDatesWithinCheckInDateAndCheckOutDate(checkInDate, checkOutDate, reservation);
