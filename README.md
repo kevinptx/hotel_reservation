@@ -7,7 +7,7 @@ It is ideal for intermediate programmers with little Java experience who want to
 The objective of the hotel_reservation project was to code a hotel application that allows users to book and manage room reservations in a hotel.
 The project utilizes the Java programming language to allow one to increase their Java development skills to an advanced level.
 
-The project may be run by executing the [hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/out/production/hotel_reservation/com/udacity/gm/scholarship/hotelreservation/HotelReservationApp.class) class
+The project may be run by executing the [HotelReservationApp](https://github.com/kevinptx/hotel_reservation/blob/main/src/com/udacity/gm/scholarship/hotelreservation/HotelReservationApp.java) class
 on your favorite Java IDEA.
 
 ![hotel_reservation](https://github.com/kevinptx/hotel_reservation/blob/main/hotel_reservation.gif)
