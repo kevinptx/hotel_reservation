@@ -26,7 +26,7 @@ The application provides four user scenarios:
 ## Admin Scenarios
 The application provides four administrative scenarios:
 
-1. <b>Displaying all customers accounts</b>.
+1. <b>Displaying all customers' accounts</b>.
 2. <b>Viewing all of the rooms in the hotel</b>.
 3. <b>Viewing all of the hotel reservations</b>.
 4. <b>Adding a room to the hotel application</b>.
